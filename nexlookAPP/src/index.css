@@ -39,6 +39,13 @@ h1 {
   line-height: 1.1;
 }
 
+/* Melhorar visualização de inputs no modo escuro */
+.dark input,
+.dark select,
+.dark textarea {
+  color-scheme: dark;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
