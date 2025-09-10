@@ -25,7 +25,6 @@ function RegisterForm() {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    debugger
     e.preventDefault();
     setError('');
     if (formData.password !== formData.confirmPassword) {

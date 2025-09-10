@@ -13,7 +13,6 @@ export default function LoginForm() {
   const { setUser } = useUser();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    debugger
     e.preventDefault();
     setIsLoading(true);
     setError('');

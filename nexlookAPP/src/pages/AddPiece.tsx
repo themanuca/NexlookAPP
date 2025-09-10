@@ -20,7 +20,6 @@ export default function AddPiece() {
   const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debugger
     const file = e.target.files?.[0] || null;
     setImage(file);
     if (file) {
@@ -31,15 +30,18 @@ export default function AddPiece() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    debugger
     e.preventDefault();
     if (!image || !name || !category) {
       // Feedback visual se estiver faltando alguma informação
-      if (!image){
+      if (!image) {
         alert('Por favor, selecione uma imagem');
         return;
-      } 
-
+      }
+      if (!name) {
+        alert('Por favor, digite um nome para a peça');
+        return;
+      }
+      return;
     }
     
     setLoading(true);
@@ -64,10 +66,16 @@ export default function AddPiece() {
         throw new Error('Erro ao enviar dados para o servidor');
       }
       
-      console.log('Dados enviados:', { name, category, imageName: image.name });
+      // Log apenas para desenvolvimento
+      if (import.meta.env.DEV) {
+        console.log('Dados enviados:', { name, category, imageName: image.name });
+      }
       navigate('/wardrobe');
     } catch (error) {
-      console.error('Erro ao salvar peça:', error);
+      // Registrar erro apenas em ambiente de desenvolvimento
+      if (import.meta.env.DEV) {
+        console.error('Erro ao salvar peça:', error);
+      }
       alert('Erro ao salvar. Tente novamente.');
     } finally {
       setLoading(false);

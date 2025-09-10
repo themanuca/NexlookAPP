@@ -32,7 +32,7 @@ export function useTokenRefresh() {
       }
     } catch (e) {
       // Se não for possível verificar a expiração, continue normalmente
-      console.log('Não foi possível verificar expiração do token');
+      // Silenciando o erro para não poluir o console em produção
     }
   }, [navigate]);
 }

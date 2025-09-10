@@ -2,27 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
-// Mock de peças cadastradas
-const mockPieces = [
-  {
-    id: 1,
-    name: 'Camisa Branca Social',
-    imageUrl: 'https://via.placeholder.com/120x120?text=Camisa',
-    category: 'Camisa',
-  },
-  {
-    id: 2,
-    name: 'Calça Jeans Azul',
-    imageUrl: 'https://via.placeholder.com/120x120?text=Calça',
-    category: 'Calça',
-  },
-];
-
 export default function ContextScreen() {
-  const { setResultadoLook,setPromptUser } = useUser();
+  const { setResultadoLook, setPromptUser } = useUser();
   const [context, setContext] = useState('');
-  // Estado para armazenar IDs de peças selecionadas (comentado temporariamente)
-  // const [selectedPieceIds, setSelectedPieceIds] = useState<number[]>([]);
+  // Implementação futura: estado para peças selecionadas
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -46,15 +29,20 @@ export default function ContextScreen() {
     });
     if(!response.ok){ 
       const errorData = await response.json();
-      console.error('Erro ao gerar look:', errorData);
+      // Registrar erro apenas em ambiente de desenvolvimento
+      if (import.meta.env.DEV) {
+        console.error('Erro ao gerar look:', errorData);
+      }
       alert('Erro ao gerar look. Tente novamente mais tarde.');
       setLoading(false);
       return;
     }
     setLoading(false);
     const responseData = await response.json();
-    // Log para debug
-    console.log('Resposta do backend:', responseData);
+    // Log apenas para desenvolvimento
+    if (import.meta.env.DEV) {
+      console.log('Resposta do backend:', responseData);
+    }
     
     // Verificar se os dados estão dentro de uma propriedade 'descricao'
     const lookData = responseData.descricao ? responseData.descricao : responseData;
@@ -72,13 +60,6 @@ export default function ContextScreen() {
     navigate('/result');
   };
 
-  // Comentado para evitar warning de função não utilizada
-  // const handleCheckboxChange = (id: number) => {
-  //   setSelectedPieceIds(prev =>
-  //     prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-  //   );
-  // };
-
   return (
     <div className="min-h-screen h-screen bg-background dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
       <form className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-card dark:bg-card-light rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4" onSubmit={handleGenerateLook}>
@@ -91,26 +72,7 @@ export default function ContextScreen() {
           onChange={e => setContext(e.target.value)}
           required
         />
-        <div>
-          <span className="block mb-2 text-text-secondary dark:text-text-secondary text-sm">(Opcional) Escolha uma peça base:</span>
-          {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {mockPieces.map(piece => (
-              <label
-                key={piece.id}
-                className={`flex flex-col items-center bg-card dark:bg-card-light rounded-lg p-2 shadow border-2 ${selectedPieceIds.includes(piece.id) ? 'border-primary' : 'border-transparent'} cursor-pointer`}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedPieceIds.includes(piece.id)}
-                  onChange={() => handleCheckboxChange(piece.id)}
-                  className="mb-1 accent-primary w-4 h-4"
-                />
-                <img src={piece.imageUrl} alt={piece.name} className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded mb-1" />
-                <span className="text-xs sm:text-sm text-text dark:text-text-dark text-center">{piece.name}</span>
-              </label>
-            ))}
-          </div> */}
-        </div>
+        {/* Implementação futura: seleção de peças base */}
         <button
           type="submit"
           className="w-full py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200"
