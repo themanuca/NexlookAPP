@@ -7,18 +7,43 @@ export type User = {
   email: string;
 };
 
+export type ClothingItemDTO = {
+  id?: string;
+  nome?: string;
+  categoria?: string;
+  imagem?: string;
+};
+
+export type LookResponse = {
+  ocasiao: string;
+  descricaoIA: string;
+  look: ClothingItemDTO[];
+  calcado: string;
+  acessorio: string;
+  
+  // Aliases para propriedades acentuadas, caso venham do backend
+  calçado?: string;
+  acessório?: string;
+};
+
 interface UserContextProps {
   user: User | null;
   setUser: (user: User | null) => void;
   logout: () => void;
   isLoading: boolean;
+  setResultadoLook: (resultado: LookResponse) => void;
+  resultadoLook: LookResponse | null;
+  setPromptUser: (prompt: string) => void;
+  promptUser: string;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [resultadoLook, setResultadoLook] = useState<LookResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [promptUser, setPromptUser] = useState<string>('');
 
   useEffect(() => {
     // Carregar usuário do localStorage ao iniciar
@@ -41,7 +66,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout, isLoading }}>
+    <UserContext.Provider value={{ user, setUser, logout, isLoading, setResultadoLook, resultadoLook, 
+    setPromptUser, promptUser }}>
       {children}
     </UserContext.Provider>
   );

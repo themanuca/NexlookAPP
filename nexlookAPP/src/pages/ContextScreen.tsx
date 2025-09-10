@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 // Mock de peças cadastradas
 const mockPieces = [
@@ -18,26 +19,65 @@ const mockPieces = [
 ];
 
 export default function ContextScreen() {
+  const { setResultadoLook,setPromptUser } = useUser();
   const [context, setContext] = useState('');
-  const [selectedPieceIds, setSelectedPieceIds] = useState<number[]>([]);
+  // Estado para armazenar IDs de peças selecionadas (comentado temporariamente)
+  // const [selectedPieceIds, setSelectedPieceIds] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleGenerateLook = (e: React.FormEvent) => {
+  const handleGenerateLook = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: Enviar contexto e peças base (se houver) para backend
-    setTimeout(() => {
+    if(context.length < 10){
+      alert('Por favor, descreva melhor a ocasião (mínimo 10 caracteres)');
       setLoading(false);
-      navigate('/result');
-    }, 1200);
+      return;
+    }
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/IAIService/GerarDescricaoImagemcomFoto`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          promptUsuario: context,
+        })
+    });
+    if(!response.ok){ 
+      const errorData = await response.json();
+      console.error('Erro ao gerar look:', errorData);
+      alert('Erro ao gerar look. Tente novamente mais tarde.');
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    const responseData = await response.json();
+    // Log para debug
+    console.log('Resposta do backend:', responseData);
+    
+    // Verificar se os dados estão dentro de uma propriedade 'descricao'
+    const lookData = responseData.descricao ? responseData.descricao : responseData;
+    
+    // Certifique-se de que os dados estão normalizados, independentemente de como vêm do backend
+    const lookResponse = {
+      ocasiao: lookData.ocasiao || context,
+      descricaoIA: lookData.descricaoIA || '',
+      look: lookData.look || [],
+      calcado: lookData.calcado || lookData.calçado || '',
+      acessorio: lookData.acessorio || lookData.acessório || ''
+    };
+    setResultadoLook(lookResponse);
+    setPromptUser(context);
+    navigate('/result');
   };
 
-  const handleCheckboxChange = (id: number) => {
-    setSelectedPieceIds(prev =>
-      prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
-    );
-  };
+  // Comentado para evitar warning de função não utilizada
+  // const handleCheckboxChange = (id: number) => {
+  //   setSelectedPieceIds(prev =>
+  //     prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
+  //   );
+  // };
 
   return (
     <div className="min-h-screen h-screen bg-background dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
@@ -53,7 +93,7 @@ export default function ContextScreen() {
         />
         <div>
           <span className="block mb-2 text-text-secondary dark:text-text-secondary text-sm">(Opcional) Escolha uma peça base:</span>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {mockPieces.map(piece => (
               <label
                 key={piece.id}
@@ -69,7 +109,7 @@ export default function ContextScreen() {
                 <span className="text-xs sm:text-sm text-text dark:text-text-dark text-center">{piece.name}</span>
               </label>
             ))}
-          </div>
+          </div> */}
         </div>
         <button
           type="submit"

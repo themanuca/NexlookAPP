@@ -35,22 +35,34 @@ export default function AddPiece() {
     e.preventDefault();
     if (!image || !name || !category) {
       // Feedback visual se estiver faltando alguma informação
-      if (!image) alert('Por favor, selecione uma imagem');
-      return;
+      if (!image){
+        alert('Por favor, selecione uma imagem');
+        return;
+      } 
+
     }
     
     setLoading(true);
     
     try {
-      // TODO: Implementação real para envio ao backend
-      // Simular upload para backend
+      // Criando FormData para upload
       const formData = new FormData();
-      formData.append('image', image);
-      formData.append('name', name);
-      formData.append('category', category);
+      formData.append('File', image);
+      formData.append('nome', name);
+      formData.append('categoria', category);
       
-      // Simulação de API - substituir pelo código real
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Enviando para o backend
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/UploadImagem`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        throw new Error('Erro ao enviar dados para o servidor');
+      }
       
       console.log('Dados enviados:', { name, category, imageName: image.name });
       navigate('/wardrobe');

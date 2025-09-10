@@ -3,22 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 // Tipos para peça
-interface Piece {
+interface LookDTO {
   id: string;
-  name: string;
-  imageUrl: string;
-  category: string;
+  titulo: string;
+  images: LookImageDTO[];
+  descricao: string;
 }
-
+interface LookImageDTO {
+  id:string;
+  imageUrl:string;
+}
 export default function Wardrobe() {
   const navigate = useNavigate();
   const { user, logout, isLoading: contextLoading } = useUser();
-  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [pieces, setPieces] = useState<LookDTO[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Não carrega dados se estiver carregando o contexto ou se não tiver usuário
-    if (!user || contextLoading) return;
+    if (!user || contextLoading) {
+      return;
+    }
+  
     
     setLoading(true);
     fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/Imagens`, {
@@ -39,7 +45,9 @@ export default function Wardrobe() {
         return res.json();
       })
       .then(data => {
-        if (data) setPieces(data);
+        if (data) {
+          setPieces(data);
+        }
       })
       .catch(error => console.error('Erro ao carregar peças:', error))
       .finally(() => setLoading(false));
@@ -84,8 +92,8 @@ export default function Wardrobe() {
         <div className="w-full max-w-4xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
           {pieces.map(piece => (
             <div key={piece.id} className="flex flex-col items-center bg-card dark:bg-card-light rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow">
-              <img src={piece.imageUrl} alt={piece.name} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg mb-2" />
-              <span className="text-xs sm:text-sm text-text dark:text-text-dark text-center">{piece.name}</span>
+              <img src={piece.images[0].imageUrl} alt={piece.titulo} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg mb-2" />
+              <span className="text-xs sm:text-sm text-text dark:text-text-dark text-center">{piece.titulo}</span>
             </div>
           ))}
         </div>
