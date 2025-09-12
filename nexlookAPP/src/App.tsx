@@ -12,17 +12,19 @@ import './App.css'
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/wardrobe" element={<Wardrobe />} />
-          <Route path="/add-piece" element={<AddPiece />} />
-          <Route path="/context" element={<ContextScreen />} />
-          <Route path="/result" element={<ResultScreen />} />
-        </Route>
-      </Routes>
+      <div className="page-container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/wardrobe" element={<Wardrobe />} />
+            <Route path="/add-piece" element={<AddPiece />} />
+            <Route path="/context" element={<ContextScreen />} />
+            <Route path="/result" element={<ResultScreen />} />
+          </Route>
+        </Routes>
+      </div>
     </Router>
   )
 }

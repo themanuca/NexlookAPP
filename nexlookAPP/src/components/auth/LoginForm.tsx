@@ -36,8 +36,8 @@ export default function LoginForm() {
       setUser({ token: data.token, userId: data.userId, name: data.name, email: data.email });
       // Redirecionar para o guarda-roupa
       navigate('/wardrobe');
-    } catch (err: any) {
-      setError(err.message || 'Erro ao fazer login.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao fazer login.');
     } finally {
       setIsLoading(false);
     }
@@ -119,9 +119,9 @@ export default function LoginForm() {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark">
+              <Link to="/forgot-password" className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark">
                 Esqueceu sua senha?
-              </a>
+              </Link>
             </div>
           </div>
 

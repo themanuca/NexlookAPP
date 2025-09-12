@@ -54,8 +54,8 @@ function RegisterForm() {
       localStorage.setItem('email', data.email);
       setUser({ token: data.token, userId: data.userId, name: data.name, email: data.email });
       navigate('/wardrobe');
-    } catch (err: any) {
-      setError(err.message || 'Erro ao registrar.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao registrar.');
     } finally {
       setIsLoading(false);
     }
