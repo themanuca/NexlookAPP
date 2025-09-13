@@ -57,7 +57,7 @@ export default function ContextScreen() {
     };
     setResultadoLook(lookResponse);
     setPromptUser(context);
-    navigate('/result');
+    navigate('/resultado');
   };
 
   return (

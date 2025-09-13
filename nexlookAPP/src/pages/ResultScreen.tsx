@@ -16,7 +16,7 @@ export default function ResultScreen() {
           </p>
           <button
             className="w-full py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200"
-            onClick={() => navigate('/context')}
+            onClick={() => navigate('/contexto')}
           >
             Gerar look
           </button>
@@ -92,13 +92,13 @@ export default function ResultScreen() {
         <div className="flex gap-3 mt-2">
           <button
             className="w-1/2 py-3 rounded-md bg-gray-500 hover:bg-gray-600 text-white font-medium text-lg transition-colors duration-200"
-            onClick={() => navigate('/context')}
+            onClick={() => navigate('/contexto')}
           >
             Novo look
           </button>
           <button
             className="w-1/2 py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200"
-            onClick={() => navigate('/wardrobe')}
+            onClick={() => navigate('/guarda-roupa')}
           >
             Ir ao guarda-roupa
           </button>

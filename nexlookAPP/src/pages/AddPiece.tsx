@@ -70,7 +70,7 @@ export default function AddPiece() {
       if (import.meta.env.DEV) {
         console.log('Dados enviados:', { name, category, imageName: image.name });
       }
-      navigate('/wardrobe');
+      navigate('/guarda-roupa');
     } catch (error) {
       // Registrar erro apenas em ambiente de desenvolvimento
       if (import.meta.env.DEV) {
@@ -122,7 +122,7 @@ export default function AddPiece() {
           <button
             type="button"
             className="w-1/3 py-3 rounded-md bg-gray-400 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-700 text-white font-medium text-lg transition-colors duration-200"
-            onClick={() => navigate('/wardrobe')}
+            onClick={() => navigate('/guarda-roupa')}
             disabled={loading}
           >
             Cancelar
