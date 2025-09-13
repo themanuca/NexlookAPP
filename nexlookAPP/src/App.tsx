@@ -16,12 +16,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/cadastro" element={<Register />} />
           <Route element={<PrivateRoute />}>
-            <Route path="/wardrobe" element={<Wardrobe />} />
-            <Route path="/add-piece" element={<AddPiece />} />
-            <Route path="/context" element={<ContextScreen />} />
-            <Route path="/result" element={<ResultScreen />} />
+            <Route path="/guarda-roupa" element={<Wardrobe />} />
+            <Route path="/adicionar-peca" element={<AddPiece />} />
+            <Route path="/contexto" element={<ContextScreen />} />
+            <Route path="/resultado" element={<ResultScreen />} />
           </Route>
         </Routes>
       </div>

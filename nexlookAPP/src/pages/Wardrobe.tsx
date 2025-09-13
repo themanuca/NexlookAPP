@@ -82,7 +82,7 @@ export default function Wardrobe() {
             Adicione suas primeiras peças para começar a montar seus looks
           </p>
           <button
-            onClick={() => navigate('/add-piece')}
+            onClick={() => navigate('/adicionar-peca')}
             className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition-colors"
           >
             Adicionar primeira peça
@@ -103,7 +103,7 @@ export default function Wardrobe() {
       <button
         className="fixed bottom-24 right-6 z-10 bg-primary hover:bg-primary-dark text-white rounded-full shadow-lg w-14 h-14 flex items-center justify-center text-3xl font-bold transition-transform hover:scale-105"
         aria-label="Adicionar peça"
-        onClick={() => navigate('/add-piece')}
+        onClick={() => navigate('/adicionar-peca')}
       >
         +
       </button>
@@ -112,7 +112,7 @@ export default function Wardrobe() {
       {pieces.length > 0 && (
         <button
           className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-11/12 max-w-md bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl shadow-lg text-lg transition-transform hover:scale-[1.02]"
-          onClick={() => navigate('/context')}
+          onClick={() => navigate('/contexto')}
         >
           Gerar look
         </button>

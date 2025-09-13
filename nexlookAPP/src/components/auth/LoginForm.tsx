@@ -35,7 +35,7 @@ export default function LoginForm() {
       localStorage.setItem('email', data.email);
       setUser({ token: data.token, userId: data.userId, name: data.name, email: data.email });
       // Redirecionar para o guarda-roupa
-      navigate('/wardrobe');
+      navigate('/guarda-roupa');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login.');
     } finally {
@@ -53,7 +53,7 @@ export default function LoginForm() {
           <p className="mt-2 text-center text-base text-text-secondary dark:text-text-secondary">
             Ou{' '}
             <Link
-              to="/register"
+              to="/cadastro"
               className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark"
             >
               crie uma nova conta

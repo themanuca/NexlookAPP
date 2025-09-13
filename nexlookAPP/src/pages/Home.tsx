@@ -18,7 +18,7 @@ export default function Home() {
           </p>
           <button
             className="w-full sm:w-auto px-8 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-semibold text-lg flex items-center justify-center gap-2 transition-colors duration-200"
-            onClick={() => navigate('/wardrobe')}
+            onClick={() => navigate('/guarda-roupa')}
           >
             <LogIn className="text-xl" />
             Começar
