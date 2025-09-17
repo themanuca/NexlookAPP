@@ -1,6 +1,7 @@
 import  { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { Trash2 } from 'lucide-react';
 
 // Tipos para peça
 interface LookDTO {
@@ -13,11 +14,61 @@ interface LookImageDTO {
   id:string;
   imageUrl:string;
 }
+
+// Tipo para resposta da API de delete
+interface DeleteResponse {
+  sucesso: boolean;
+  mensagem: string;
+}
 export default function Wardrobe() {
   const navigate = useNavigate();
   const { user, logout, isLoading: contextLoading } = useUser();
   const [pieces, setPieces] = useState<LookDTO[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Função para deletar uma peça
+  const deleteLook = async (lookId: string) => {
+    if (!user) return;
+    
+    const confirmDelete = window.confirm('Tem certeza que deseja deletar esta peça?');
+    if (!confirmDelete) return;
+
+    setDeletingId(lookId);
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/ExcluirLook/${lookId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${user.token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          logout();
+          return;
+        }
+        throw new Error('Erro ao deletar peça');
+      }
+
+      const data: DeleteResponse = await response.json();
+      
+      if (data.sucesso) {
+        // Remove a peça do estado local
+        setPieces(prevPieces => prevPieces.filter(piece => piece.id !== lookId));
+        alert('Peça deletada com sucesso!');
+      } else {
+        throw new Error(data.mensagem || 'Erro ao deletar peça');
+      }
+    } catch (error) {
+      console.error('Erro ao deletar peça:', error);
+      alert('Erro ao deletar peça. Tente novamente.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   useEffect(() => {
     // Não carrega dados se estiver carregando o contexto ou se não tiver usuário
@@ -91,7 +142,21 @@ export default function Wardrobe() {
       ) : (
         <div className="w-full max-w-4xl grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mx-auto">
           {pieces.map(piece => (
-            <div key={piece.id} className="flex flex-col items-center bg-card dark:bg-card-light rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow">
+            <div key={piece.id} className="relative flex flex-col items-center bg-card dark:bg-card-light rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow group">
+              {/* Botão de delete */}
+              <button
+                onClick={() => deleteLook(piece.id)}
+                disabled={deletingId === piece.id}
+                className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 disabled:opacity-50"
+                title="Deletar peça"
+              >
+                {deletingId === piece.id ? (
+                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                ) : (
+                  <Trash2 size={16} />
+                )}
+              </button>
+              
               <img src={piece.images[0].imageUrl} alt={piece.titulo} className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg mb-2" />
               <span className="text-xs sm:text-sm text-text dark:text-text-dark text-center">{piece.titulo}</span>
             </div>
