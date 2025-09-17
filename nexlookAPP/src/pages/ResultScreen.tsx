@@ -6,7 +6,7 @@ export default function ResultScreen() {
   const navigate = useNavigate();
   const { resultadoLook, promptUser } = useUser();
 
-  if (!resultadoLook) {
+  if (!resultadoLook?.look.length) {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
         <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-800 dark:bg-card-light rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4">

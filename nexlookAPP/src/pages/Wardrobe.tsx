@@ -2,6 +2,8 @@ import  { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { Trash2 } from 'lucide-react';
+import Toast from '../components/Toast';
+import ConfirmModal from '../components/ConfirmModal';
 
 // Tipos para peça
 interface LookDTO {
@@ -20,24 +22,55 @@ interface DeleteResponse {
   sucesso: boolean;
   mensagem: string;
 }
+
+// Tipo para toast/notificação
+interface ToastNotification {
+  id: string;
+  message: string;
+  type: 'success' | 'error';
+}
 export default function Wardrobe() {
   const navigate = useNavigate();
   const { user, logout, isLoading: contextLoading } = useUser();
   const [pieces, setPieces] = useState<LookDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [toasts, setToasts] = useState<ToastNotification[]>([]);
+  const [confirmDelete, setConfirmDelete] = useState<{ isOpen: boolean; lookId: string | null }>({
+    isOpen: false,
+    lookId: null
+  });
+
+  // Função para adicionar toast
+  const addToast = (message: string, type: 'success' | 'error') => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts(prev => [...prev, { id, message, type }]);
+  };
+
+  // Função para remover toast
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
+
+  // Função para abrir modal de confirmação
+  const openDeleteConfirm = (lookId: string) => {
+    setConfirmDelete({ isOpen: true, lookId });
+  };
+
+  // Função para fechar modal de confirmação
+  const closeDeleteConfirm = () => {
+    setConfirmDelete({ isOpen: false, lookId: null });
+  };
 
   // Função para deletar uma peça
-  const deleteLook = async (lookId: string) => {
-    if (!user) return;
-    
-    const confirmDelete = window.confirm('Tem certeza que deseja deletar esta peça?');
-    if (!confirmDelete) return;
+  const deleteLook = async () => {
+    if (!user || !confirmDelete.lookId) return;
 
-    setDeletingId(lookId);
+    setDeletingId(confirmDelete.lookId);
+    closeDeleteConfirm();
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/ExcluirLook/${lookId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/ExcluirLook/${confirmDelete.lookId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${user.token}`,
@@ -57,14 +90,14 @@ export default function Wardrobe() {
       
       if (data.sucesso) {
         // Remove a peça do estado local
-        setPieces(prevPieces => prevPieces.filter(piece => piece.id !== lookId));
-        alert('Peça deletada com sucesso!');
+        setPieces(prevPieces => prevPieces.filter(piece => piece.id !== confirmDelete.lookId));
+        addToast('Peça deletada com sucesso!', 'success');
       } else {
         throw new Error(data.mensagem || 'Erro ao deletar peça');
       }
     } catch (error) {
       console.error('Erro ao deletar peça:', error);
-      alert('Erro ao deletar peça. Tente novamente.');
+      addToast('Erro ao deletar peça. Tente novamente.', 'error');
     } finally {
       setDeletingId(null);
     }
@@ -106,6 +139,28 @@ export default function Wardrobe() {
 
   return (
     <div className="min-h-screen bg-background dark:bg-background px-2 sm:px-4 pt-4 pb-32 flex flex-col items-center relative">
+      {/* Toasts */}
+      {toasts.map(toast => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
+      
+      {/* Modal de confirmação de delete */}
+      <ConfirmModal
+        isOpen={confirmDelete.isOpen}
+        title="Deletar Peça"
+        message="Tem certeza que deseja deletar esta peça? Esta ação não pode ser desfeita."
+        onConfirm={deleteLook}
+        onCancel={closeDeleteConfirm}
+        confirmText="Deletar"
+        cancelText="Cancelar"
+        type="danger"
+      />
+      
       {/* Nome do usuário no canto superior esquerdo */}
       {user && (
         <div className="absolute left-4 top-4 text-lg font-semibold text-primary dark:text-primary-dark flex items-center gap-2">
@@ -145,7 +200,7 @@ export default function Wardrobe() {
             <div key={piece.id} className="relative flex flex-col items-center bg-card dark:bg-card-light rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow group">
               {/* Botão de delete */}
               <button
-                onClick={() => deleteLook(piece.id)}
+                onClick={() => openDeleteConfirm(piece.id)}
                 disabled={deletingId === piece.id}
                 className="absolute top-2 right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 disabled:opacity-50"
                 title="Deletar peça"
