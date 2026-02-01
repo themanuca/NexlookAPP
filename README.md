@@ -51,3 +51,35 @@ Licença
 
 Notas
 - Este README é um ponto de partida; verifique `nexlookAPP/package.json` e `nexlook-mobile/package.json` para scripts e instruções específicas.
+# NexlookMobile (Expo + React Native)
+
+Projeto simples criado para testar no emulador Android via Expo.
+
+Pré-requisitos
+- Node.js
+- Android Studio com um emulador configurado
+- (Opcional) Expo CLI: `npm install -g expo-cli` — também funciona com `npx`
+
+Instalação
+
+```bash
+npm install
+```
+
+Rodando no emulador Android
+
+1. Abra o Android Studio e inicie um emulador (AVD Manager).
+2. Inicie o servidor Metro do Expo:
+
+```bash
+npx expo start
+```
+
+3. Com o servidor aberto, pressione `a` no terminal para abrir no emulador Android, ou execute:
+
+```bash
+npx expo run:android
+```
+
+Comandos úteis
+- `npm run android` — abre o Expo no emulador (mesmo que `npx expo start --android`).
