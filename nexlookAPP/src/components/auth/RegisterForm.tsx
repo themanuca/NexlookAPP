@@ -62,26 +62,24 @@ function RegisterForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background py-6 px-2 sm:px-4">
-      <div className="w-full max-w-md space-y-8 bg-card dark:bg-card-light p-6 sm:p-8 rounded-2xl shadow-lg">
-        <div>
-          <h2 className="text-center text-3xl font-bold text-text dark:text-text-dark">
-            Criar nova conta
-          </h2>
-          <p className="mt-2 text-center text-base text-text-secondary dark:text-text-secondary">
-            Ou{' '}
-            <Link
-              to="/login"
-              className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark"
-            >
-              faça login em sua conta existente
-            </Link>
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/6 blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Brand */}
+        <div className="text-center mb-10">
+          <h1 className="font-display text-5xl font-light text-white mb-1">
+            Nex<span className="italic text-primary">Look</span>
+          </h1>
+          <p className="text-text-secondary text-sm tracking-wide">Crie sua conta</p>
         </div>
-        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm">
+
+        {/* Card */}
+        <div className="bg-card border border-white/8 rounded-2xl p-8 shadow-2xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="name" className="sr-only">
+              <label htmlFor="name" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
                 Nome completo
               </label>
               <input
@@ -89,14 +87,15 @@ function RegisterForm() {
                 name="name"
                 type="text"
                 required
-                className="appearance-none rounded-t-md relative block w-full px-4 py-3 border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Nome completo"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="Seu nome"
                 value={formData.name}
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
                 Email
               </label>
               <input
@@ -104,14 +103,15 @@ function RegisterForm() {
                 name="email"
                 type="email"
                 required
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Email"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="seu@email.com"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
                 Senha
               </label>
               <input
@@ -119,45 +119,59 @@ function RegisterForm() {
                 name="password"
                 type="password"
                 required
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Senha"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="confirmPassword" className="sr-only">
-                Confirmar Senha
+              <label htmlFor="confirmPassword" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
+                Confirmar senha
               </label>
               <input
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
                 required
-                className="appearance-none rounded-b-md relative block w-full px-4 py-3 border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Confirmar senha"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="••••••••"
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
             </div>
-          </div>
 
-          {error && (
-            <div className="text-center text-red-500 text-sm font-semibold">
-              {error}
-            </div>
-          )}
+            {error && (
+              <p className="text-red-400 text-sm text-center py-2 px-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                {error}
+              </p>
+            )}
 
-          <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200 dark:bg-primary-dark dark:hover:bg-primary"
               disabled={isLoading}
+              className="w-full py-3.5 bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm tracking-wide rounded-xl transition-all duration-200 mt-2"
             >
-              {isLoading ? 'Cadastrando...' : 'Criar conta'}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Cadastrando...
+                </span>
+              ) : 'Criar conta'}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
+
+        <p className="text-center text-text-secondary text-sm mt-6">
+          Já tem conta?{' '}
+          <Link to="/login" className="text-primary hover:text-primary-dark transition-colors duration-200">
+            Fazer login
+          </Link>
+        </p>
       </div>
     </div>
   );

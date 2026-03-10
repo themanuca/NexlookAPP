@@ -1,6 +1,6 @@
-
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { ArrowLeft, RotateCcw, Shirt } from 'lucide-react';
 
 export default function ResultScreen() {
   const navigate = useNavigate();
@@ -8,14 +8,17 @@ export default function ResultScreen() {
 
   if (!resultadoLook?.look.length) {
     return (
-      <div className="min-h-screen bg-gray-100 dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
-        <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-800 dark:bg-card-light rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4">
-          <h2 className="text-xl sm:text-2xl font-bold text-center text-white dark:text-text-dark mb-2">Nenhum look gerado</h2>
-          <p className="text-center text-base text-gray-300 dark:text-text-dark mb-4">
-            Volte e gere um look para ver as sugestões.
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-md text-center">
+          <div className="w-16 h-16 rounded-2xl bg-card border border-white/10 flex items-center justify-center mx-auto mb-6">
+            <Shirt size={24} className="text-text-secondary" strokeWidth={1.5} />
+          </div>
+          <h2 className="font-display text-3xl font-light text-white mb-3">Nenhum look gerado</h2>
+          <p className="text-text-secondary text-sm mb-8">
+            Volte e descreva uma ocasião para ver as sugestões.
           </p>
           <button
-            className="w-full py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200"
+            className="px-8 py-3 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-xl transition-colors duration-200"
             onClick={() => navigate('/contexto')}
           >
             Gerar look
@@ -25,85 +28,135 @@ export default function ResultScreen() {
     );
   }
 
+  const calcado = resultadoLook.calcado || (resultadoLook as any).calçado;
+  const acessorio = resultadoLook.acessorio || (resultadoLook as any).acessório;
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-800 dark:bg-card-light rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4">
-        <h2 className="text-xl sm:text-2xl font-bold text-center text-white dark:text-text-dark mb-2">Sugestão de Look</h2>
-        <p className="text-center text-base sm:text-lg font-medium text-primary dark:text-primary bg-white dark:bg-transparent px-3 py-1 rounded-md mb-2">
-          {promptUser || (typeof resultadoLook.ocasiao === 'object' ? JSON.stringify(resultadoLook.ocasiao) : resultadoLook.ocasiao) || ""}
-        </p>
-        
-        {/* Descrição da IA */}
-        <div className="bg-background-light dark:bg-card rounded-md p-4 text-sm sm:text-base text-gray-800 dark:text-gray-100 shadow mb-4">
-          <p className="mb-2 font-semibold text-gray-900 dark:text-white">Recomendação:</p>
-          <p className="whitespace-pre-wrap">{typeof resultadoLook.descricaoIA === 'object' ? JSON.stringify(resultadoLook.descricaoIA) : resultadoLook.descricaoIA || ""}</p>
-        </div>
-        
-        {/* Itens do look */}
-        {resultadoLook.look && resultadoLook.look.length > 0 && (
-          <div className="mb-4">
-            <h3 className="font-semibold text-lg text-white dark:text-text-dark mb-2">Peças sugeridas:</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {resultadoLook.look.map((item, index) => (
-                <div key={index} className="flex flex-col items-center bg-white dark:bg-gray-800 rounded-lg p-2 shadow">
-                  {item.imagem ? (
-                    <img 
-                      src={item.imagem} 
-                      alt={item.nome || `Item ${index + 1}`} 
-                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mb-1"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center mb-1">
-                      <span className="text-gray-500 dark:text-gray-400">{item.categoria}</span>
-                    </div>
-                  )}
-                  <span className="text-xs sm:text-sm text-gray-800 dark:text-gray-200 text-center font-medium">
-                    {item.nome ? String(item.nome) : `${item.categoria || 'Item'} ${index + 1}`}
-                  </span>
-                </div>
-              ))}
-            </div>
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-20 bg-background/90 backdrop-blur-md border-b border-white/8 px-4 sm:px-6 py-4">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/guarda-roupa')}
+              className="p-2 rounded-lg hover:bg-white/8 text-text-secondary hover:text-white transition-colors duration-200"
+            >
+              <ArrowLeft size={18} />
+            </button>
+            <h1 className="font-display text-2xl font-light text-white">
+              Seu <span className="italic text-primary">look</span>
+            </h1>
           </div>
-        )}
-        
-        {/* Calçado e Acessório */}
-        {((resultadoLook.calcado || resultadoLook.calçado) || (resultadoLook.acessorio || resultadoLook.acessório)) && (
-          <div className={`${(resultadoLook.calcado || resultadoLook.calçado) && (resultadoLook.acessorio || resultadoLook.acessório) ? 'grid grid-cols-2' : ''} gap-3 mb-4`}>
-            {(resultadoLook.calcado || resultadoLook.calçado) && (
-              <div className="bg-background-light dark:bg-gray-700 rounded-md p-3 text-sm text-gray-800 dark:text-gray-100 shadow">
-                <p className="font-semibold mb-1 text-gray-900 dark:text-white">Calçado recomendado:</p>
-                <p>{typeof (resultadoLook.calcado || resultadoLook.calçado) === 'object' ? 
-                    JSON.stringify(resultadoLook.calcado || resultadoLook.calçado) : 
-                    resultadoLook.calcado || resultadoLook.calçado || ""}</p>
-              </div>
-            )}
-            
-            {(resultadoLook.acessorio || resultadoLook.acessório) && (
-              <div className="bg-background-light dark:bg-gray-700 rounded-md p-3 text-sm text-gray-800 dark:text-gray-100 shadow">
-                <p className="font-semibold mb-1 text-gray-900 dark:text-white">Acessórios recomendados:</p>
-                <p>{typeof (resultadoLook.acessorio || resultadoLook.acessório) === 'object' ? 
-                    JSON.stringify(resultadoLook.acessorio || resultadoLook.acessório) : 
-                    resultadoLook.acessorio || resultadoLook.acessório || ""}</p>
-              </div>
-            )}
-          </div>
-        )}
-        
-        <div className="flex gap-3 mt-2">
           <button
-            className="w-1/2 py-3 rounded-md bg-gray-500 hover:bg-gray-600 text-white font-medium text-lg transition-colors duration-200"
             onClick={() => navigate('/contexto')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/12 hover:border-white/25 text-text-secondary hover:text-white text-xs transition-all duration-200"
           >
+            <RotateCcw size={12} />
             Novo look
           </button>
-          <button
-            className="w-1/2 py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200"
-            onClick={() => navigate('/guarda-roupa')}
-          >
-            Ir ao guarda-roupa
-          </button>
         </div>
-      </div>
+      </header>
+
+      {/* Content */}
+      <main className="flex-1 px-4 sm:px-6 py-8 max-w-2xl mx-auto w-full">
+        <div className="flex flex-col gap-6">
+
+          {/* Occasion badge */}
+          <div className="flex justify-center">
+            <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary/15 border border-primary/25 text-primary text-sm font-medium">
+              {promptUser || (typeof resultadoLook.ocasiao === 'object'
+                ? JSON.stringify(resultadoLook.ocasiao)
+                : resultadoLook.ocasiao) || ''}
+            </span>
+          </div>
+
+          {/* AI Recommendation */}
+          {resultadoLook.descricaoIA && (
+            <div className="bg-card border border-white/8 rounded-2xl p-6">
+              <p className="text-xs tracking-widest uppercase text-text-secondary/60 mb-3">Recomendação da IA</p>
+              <p className="text-white/85 text-sm leading-relaxed whitespace-pre-wrap">
+                {typeof resultadoLook.descricaoIA === 'object'
+                  ? JSON.stringify(resultadoLook.descricaoIA)
+                  : resultadoLook.descricaoIA}
+              </p>
+            </div>
+          )}
+
+          {/* Suggested pieces */}
+          {resultadoLook.look && resultadoLook.look.length > 0 && (
+            <div>
+              <p className="text-xs tracking-widest uppercase text-text-secondary/60 mb-4">Peças sugeridas</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {resultadoLook.look.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-card border border-white/8 rounded-xl overflow-hidden hover:border-white/20 transition-all duration-200"
+                  >
+                    <div className="aspect-square overflow-hidden">
+                      {item.imagem ? (
+                        <img
+                          src={item.imagem}
+                          alt={item.nome || `Item ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-background flex items-center justify-center">
+                          <span className="text-text-secondary/40 text-xs text-center px-2">
+                            {item.categoria || 'Peça'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-3 py-2.5">
+                      <span className="text-xs text-text-secondary block truncate">
+                        {item.nome ? String(item.nome) : `${item.categoria || 'Item'} ${index + 1}`}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Footwear & Accessories */}
+          {(calcado || acessorio) && (
+            <div className={`grid gap-3 ${calcado && acessorio ? 'grid-cols-2' : 'grid-cols-1'}`}>
+              {calcado && (
+                <div className="bg-card border border-white/8 rounded-xl p-4">
+                  <p className="text-xs tracking-widest uppercase text-text-secondary/60 mb-2">Calçado</p>
+                  <p className="text-white/85 text-sm leading-relaxed">
+                    {typeof calcado === 'object' ? JSON.stringify(calcado) : calcado}
+                  </p>
+                </div>
+              )}
+              {acessorio && (
+                <div className="bg-card border border-white/8 rounded-xl p-4">
+                  <p className="text-xs tracking-widest uppercase text-text-secondary/60 mb-2">Acessórios</p>
+                  <p className="text-white/85 text-sm leading-relaxed">
+                    {typeof acessorio === 'object' ? JSON.stringify(acessorio) : acessorio}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Bottom actions */}
+          <div className="flex gap-3 pt-2 pb-6">
+            <button
+              className="flex-1 py-3.5 rounded-xl border border-white/12 hover:border-white/25 hover:bg-white/5 text-text-secondary hover:text-white text-sm font-medium transition-all duration-200"
+              onClick={() => navigate('/contexto')}
+            >
+              Novo look
+            </button>
+            <button
+              className="flex-1 py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-medium transition-all duration-200"
+              onClick={() => navigate('/guarda-roupa')}
+            >
+              Ir ao armário
+            </button>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

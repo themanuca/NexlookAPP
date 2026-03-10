@@ -39,6 +39,7 @@ export default function AddPieceScreen({ navigation }) {
 
     setLoading(true);
     try {
+      debugger
       const formData = new FormData();
       formData.append('File', {
         uri: image.uri,

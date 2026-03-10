@@ -28,13 +28,11 @@ export default function LoginForm() {
         throw new Error('Login inválido. Verifique seus dados.');
       }
       const data = await response.json();
-      // Salvar token/localStorage, etc.
       localStorage.setItem('token', data.token);
       localStorage.setItem('userId', data.userId);
       localStorage.setItem('name', data.name);
       localStorage.setItem('email', data.email);
       setUser({ token: data.token, userId: data.userId, name: data.name, email: data.email });
-      // Redirecionar para o guarda-roupa
       navigate('/guarda-roupa');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login.');
@@ -44,26 +42,24 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background py-6 px-2 sm:px-4">
-      <div className="w-full max-w-md space-y-8 bg-card dark:bg-card-light p-6 sm:p-8 rounded-2xl shadow-lg">
-        <div>
-          <h2 className="text-center text-3xl font-bold text-text dark:text-text-dark">
-            Entre na sua conta
-          </h2>
-          <p className="mt-2 text-center text-base text-text-secondary dark:text-text-secondary">
-            Ou{' '}
-            <Link
-              to="/cadastro"
-              className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark"
-            >
-              crie uma nova conta
-            </Link>
-          </p>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/6 blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Brand */}
+        <div className="text-center mb-10">
+          <h1 className="font-display text-5xl font-light text-white mb-1">
+            Nex<span className="italic text-primary">Look</span>
+          </h1>
+          <p className="text-text-secondary text-sm tracking-wide">Entre na sua conta</p>
         </div>
-        <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm">
+
+        {/* Card */}
+        <div className="bg-card border border-white/8 rounded-2xl p-8 shadow-2xl">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email-address" className="sr-only">
+              <label htmlFor="email-address" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
                 Email
               </label>
               <input
@@ -72,19 +68,15 @@ export default function LoginForm() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-t-md relative block w-full px-4 py-3 
-             border border-gray-700 dark:border-gray-300 
-             placeholder-gray-400 dark:placeholder-gray-500 
-             text-gray-900 dark:text-gray-100 
-             focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary 
-             sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Email"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
                 Senha
               </label>
               <input
@@ -93,54 +85,43 @@ export default function LoginForm() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-t-md relative block w-full px-4 py-3 
-             border border-gray-700 dark:border-gray-300 
-             placeholder-gray-400 dark:placeholder-gray-500 
-             text-gray-900 dark:text-gray-100 
-             focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary 
-             sm:text-base bg-white dark:bg-gray-800"
-                placeholder="Senha"
+                className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-          </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-700 rounded dark:bg-card dark:border-gray-300"
-                id="remember-me"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-text dark:text-text-dark">
-                Lembrar-me
-              </label>
-            </div>
+            {error && (
+              <p className="text-red-400 text-sm text-center py-2 px-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                {error}
+              </p>
+            )}
 
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-primary hover:text-primary-dark dark:text-primary-dark">
-                Esqueceu sua senha?
-              </Link>
-            </div>
-          </div>
-
-          {error && (
-            <div className="text-center text-red-500 text-sm font-semibold">
-              {error}
-            </div>
-          )}
-
-          <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-semibold rounded-md text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200 dark:bg-primary-dark dark:hover:bg-primary"
               disabled={isLoading}
+              className="w-full py-3.5 bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm tracking-wide rounded-xl transition-all duration-200 mt-2"
             >
-              {isLoading ? 'Entrando...' : 'Entrar'}
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Entrando...
+                </span>
+              ) : 'Entrar'}
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
+
+        <p className="text-center text-text-secondary text-sm mt-6">
+          Não tem conta?{' '}
+          <Link to="/cadastro" className="text-primary hover:text-primary-dark transition-colors duration-200">
+            Criar conta
+          </Link>
+        </p>
       </div>
     </div>
   );

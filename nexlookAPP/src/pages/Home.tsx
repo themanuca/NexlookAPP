@@ -1,54 +1,79 @@
 import { useNavigate } from 'react-router-dom';
-import { LogIn, Instagram } from 'lucide-react';
+import { ArrowRight, Instagram } from 'lucide-react';
 import { BsTiktok } from 'react-icons/bs';
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background dark:bg-background">
-      <main className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-md sm:max-w-lg bg-card dark:bg-card-light rounded-2xl shadow-xl p-8 sm:p-10 flex flex-col items-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-text dark:text-text-dark">
-            Bem-vindo ao 
-            <span className="text-primary block mt-2">NexLook</span>
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
+      {/* Atmospheric glow */}
+      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-primary/8 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full bg-primary/5 blur-[100px] pointer-events-none" />
+
+      <main className="flex-1 flex items-center justify-center px-6 relative z-10">
+        <div className="w-full max-w-lg flex flex-col items-center text-center">
+
+          {/* Eyebrow */}
+          <span className="text-xs tracking-[0.35em] uppercase text-primary font-medium mb-6 opacity-80">
+            AI Fashion Stylist
+          </span>
+
+          {/* Wordmark */}
+          <h1 className="font-display text-[5.5rem] sm:text-[7rem] font-light text-white leading-[0.9] tracking-tight mb-6">
+            Nex<span className="italic text-primary">Look</span>
           </h1>
-          <p className="text-base sm:text-lg text-center text-text-secondary dark:text-text-secondary mt-4 mb-8">
+
+          {/* Thin rule */}
+          <div className="w-12 h-px bg-white/20 mb-8" />
+
+          {/* Tagline */}
+          <p className="text-text-secondary text-base sm:text-lg leading-relaxed mb-12 max-w-xs sm:max-w-sm">
             Envie suas roupas, escolha a ocasião e deixe a IA montar a combinação ideal para você.
           </p>
-          <button
-            className="w-full sm:w-auto px-8 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-semibold text-lg flex items-center justify-center gap-2 transition-colors duration-200"
-            onClick={() => navigate('/guarda-roupa')}
-          >
-            <LogIn className="text-xl" />
-            Começar
-          </button>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <button
+              className="group px-10 py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-medium text-sm tracking-wide transition-all duration-200 flex items-center justify-center gap-2"
+              onClick={() => navigate('/login')}
+            >
+              Entrar
+              <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+            </button>
+            <button
+              className="px-10 py-3.5 rounded-xl border border-white/15 hover:border-white/35 hover:bg-white/5 text-white font-medium text-sm tracking-wide transition-all duration-200"
+              onClick={() => navigate('/cadastro')}
+            >
+              Criar conta
+            </button>
+          </div>
         </div>
       </main>
-      <footer className="py-4 flex flex-col items-center gap-4 text-text-secondary dark:text-text-secondary">
-        <div className="flex items-center justify-center gap-4">
-          <a 
-            href="https://www.tiktok.com/@sergio_manuca" 
-            target="_blank" 
+
+      <footer className="py-6 flex flex-col items-center gap-3 relative z-10">
+        <div className="flex items-center gap-5">
+          <a
+            href="https://www.tiktok.com/@sergio_manuca"
+            target="_blank"
             rel="noopener noreferrer"
-            className="text-text-secondary dark:text-text-secondary hover:text-primary dark:hover:text-primary transform hover:scale-110 transition-all duration-200"
-            aria-label="Siga-me no TikTok"
+            className="text-text-secondary hover:text-white transition-colors duration-200"
+            aria-label="TikTok"
           >
-            <BsTiktok size={20} />
+            <BsTiktok size={16} />
           </a>
-          <a 
-            href="https://www.instagram.com/dev.manuca" 
-            target="_blank" 
+          <div className="w-px h-3 bg-white/20" />
+          <a
+            href="https://www.instagram.com/manuca.dev/"
+            target="_blank"
             rel="noopener noreferrer"
-            className="text-text-secondary dark:text-text-secondary hover:text-primary dark:hover:text-primary transform hover:scale-110 transition-all duration-200"
-            aria-label="Siga-me no Instagram"
+            className="text-text-secondary hover:text-white transition-colors duration-200"
+            aria-label="Instagram"
           >
-            <Instagram size={20} />
+            <Instagram size={16} />
           </a>
         </div>
-        <div className="text-xs opacity-80">
-          © 2025 NexLook. Todos os direitos reservados.
-        </div>
+        <p className="text-text-secondary/50 text-xs tracking-widest">© 2025 NEXLOOK</p>
       </footer>
     </div>
   );

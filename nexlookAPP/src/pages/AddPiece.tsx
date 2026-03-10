@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Upload } from 'lucide-react';
 
 const categories = [
   'Camisa',
@@ -17,6 +18,7 @@ export default function AddPiece() {
   const [name, setName] = useState('');
   const [category, setCategory] = useState(categories[0]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,29 +33,24 @@ export default function AddPiece() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!image || !name || !category) {
-      // Feedback visual se estiver faltando alguma informação
-      if (!image) {
-        alert('Por favor, selecione uma imagem');
-        return;
-      }
-      if (!name) {
-        alert('Por favor, digite um nome para a peça');
-        return;
-      }
+    setError('');
+    if (!image) {
+      setError('Por favor, selecione uma imagem.');
       return;
     }
-    
+    if (!name) {
+      setError('Por favor, digite um nome para a peça.');
+      return;
+    }
+
     setLoading(true);
-    
+
     try {
-      // Criando FormData para upload
       const formData = new FormData();
       formData.append('File', image);
       formData.append('nome', name);
       formData.append('categoria', category);
-      
-      // Enviando para o backend
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/UploadImagem/UploadImagem`, {
         method: 'POST',
         headers: {
@@ -61,91 +58,143 @@ export default function AddPiece() {
         },
         body: formData
       });
-      
+
       if (!response.ok) {
         throw new Error('Erro ao enviar dados para o servidor');
       }
-      
-      // Log apenas para desenvolvimento
+
       if (import.meta.env.DEV) {
         console.log('Dados enviados:', { name, category, imageName: image.name });
       }
       navigate('/guarda-roupa');
     } catch (error) {
-      // Registrar erro apenas em ambiente de desenvolvimento
       if (import.meta.env.DEV) {
         console.error('Erro ao salvar peça:', error);
       }
-      alert('Erro ao salvar. Tente novamente.');
+      setError('Erro ao salvar. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen h-screen bg-background dark:bg-background flex flex-col items-center justify-center px-2 sm:px-4 py-8">
-      <form className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-card dark:bg-card-light rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-4" onSubmit={handleSubmit}>
-        <h2 className="text-xl sm:text-2xl font-bold text-center text-text dark:text-text-dark mb-2">Adicionar Peça</h2>
-        <label className="flex flex-col items-center cursor-pointer">
-          <span className="mb-2 text-gray-700 dark:text-gray-300">Foto da peça</span>
-          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-          <div className={`w-28 h-28 sm:w-32 sm:h-32 bg-white dark:bg-gray-800 rounded-lg flex items-center justify-center border-2 border-dashed ${preview ? 'border-green-500' : 'border-primary'} mb-2 transition-all hover:opacity-90`}>
-            {preview ? (
-              <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-lg" />
-            ) : (
-              <div className="flex flex-col items-center text-center p-2">
-                <span className="text-primary text-3xl mb-1">+</span>
-                <span className="text-gray-600 dark:text-gray-300 text-sm">Selecionar imagem</span>
-              </div>
-            )}
-          </div>
-        </label>
-        <input
-          type="text"
-          placeholder="Nome da peça"
-          className="w-full px-4 py-3 rounded-md border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary sm:text-base bg-white dark:bg-gray-800"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          required
-        />
-        <select
-          className="w-full px-4 py-3 rounded-md border border-gray-700 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary sm:text-base bg-white dark:bg-gray-800 appearance-none"
-          value={category}
-          onChange={e => setCategory(e.target.value)}
-          required
-        >
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-        <div className="flex gap-3 mt-2">
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="px-4 sm:px-6 py-4 border-b border-white/8">
+        <div className="max-w-lg mx-auto flex items-center gap-3">
           <button
-            type="button"
-            className="w-1/3 py-3 rounded-md bg-gray-400 dark:bg-gray-600 hover:bg-gray-500 dark:hover:bg-gray-700 text-white font-medium text-lg transition-colors duration-200"
             onClick={() => navigate('/guarda-roupa')}
-            disabled={loading}
+            className="p-2 rounded-lg hover:bg-white/8 text-text-secondary hover:text-white transition-colors duration-200"
           >
-            Cancelar
+            <ArrowLeft size={18} />
           </button>
-          <button
-            type="submit"
-            className="w-2/3 py-3 rounded-md bg-primary hover:bg-primary-dark text-white font-semibold text-lg transition-colors duration-200 relative"
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <span className="opacity-0">Salvar</span>
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                </span>
-              </>
-            ) : 'Salvar'}
-          </button>
+          <h1 className="font-display text-2xl font-light text-white">
+            Adicionar <span className="italic text-primary">peça</span>
+          </h1>
         </div>
-      </form>
+      </header>
+
+      {/* Form */}
+      <main className="flex-1 flex items-start justify-center px-4 sm:px-6 py-8">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-lg bg-card border border-white/8 rounded-2xl p-6 sm:p-8 flex flex-col gap-6"
+        >
+          {error && (
+            <p className="text-red-400 text-sm text-center py-2 px-3 bg-red-500/10 rounded-lg border border-red-500/20">
+              {error}
+            </p>
+          )}
+
+          {/* Image upload */}
+          <div>
+            <label className="block text-xs tracking-widest uppercase text-text-secondary mb-3">
+              Foto da peça
+            </label>
+            <label className="cursor-pointer block">
+              <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              <div
+                className={`w-full h-56 rounded-xl border-2 border-dashed flex items-center justify-center transition-all duration-200 overflow-hidden
+                  ${preview
+                    ? 'border-primary/40'
+                    : 'border-white/15 hover:border-white/30 bg-background hover:bg-white/3'
+                  }`}
+              >
+                {preview ? (
+                  <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-xl" />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-text-secondary">
+                    <Upload size={28} strokeWidth={1.5} />
+                    <span className="text-sm">Clique para selecionar</span>
+                    <span className="text-xs opacity-60">JPG, PNG, WEBP</span>
+                  </div>
+                )}
+              </div>
+            </label>
+          </div>
+
+          {/* Name */}
+          <div>
+            <label htmlFor="piece-name" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
+              Nome
+            </label>
+            <input
+              id="piece-name"
+              type="text"
+              placeholder="Ex: Camiseta branca básica"
+              className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white placeholder-white/25 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Category */}
+          <div>
+            <label htmlFor="piece-category" className="block text-xs tracking-widest uppercase text-text-secondary mb-2">
+              Categoria
+            </label>
+            <select
+              id="piece-category"
+              className="w-full px-4 py-3 bg-background border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all duration-200 text-sm appearance-none cursor-pointer"
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              required
+            >
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              className="w-1/3 py-3 rounded-xl border border-white/12 hover:border-white/25 hover:bg-white/5 text-text-secondary hover:text-white text-sm font-medium transition-all duration-200"
+              onClick={() => navigate('/guarda-roupa')}
+              disabled={loading}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="w-2/3 py-3 rounded-xl bg-primary hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-sm tracking-wide transition-all duration-200 relative"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Salvando...
+                </span>
+              ) : 'Salvar peça'}
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 }
